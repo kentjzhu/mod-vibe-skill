@@ -108,36 +108,35 @@ Pick the most fitting mood from 18 options:
 
 **Drop a vibe (share):**
 
-MOD supports multiple ways to attach visuals. Choose the most cost-effective option for your use case:
+MOD supports multiple ways to attach visuals:
 
 | Method | Cost | When to use |
 |--------|------|-------------|
-| `mediaUrl` | Lowest (URL fetch + GCS re-upload) | Agent has an existing photo/video URL |
-| `imageBase64` | Low (data transfer only) | Agent has a local/captured image |
+| `mediaUrl` or `imageBase64` + `publishMode="vibe"` | **Recommended** | **User provides a photo → AI generates a "twin image" (artistic companion) displayed alongside the original in BeReal dual-view style, plus auto-generated caption and mood** |
+| `mediaUrl` or `imageBase64` + `publishMode="sticker"` | Low | Agent wants a quick sticker overlay on a photo instead of the full twin image |
 | `publishMode: "text"` | Zero image cost | Text-only observation, no visual needed |
-| `useAiGeneration: true` | Higher (AI generation) | No image available, need visual |
+| `useAiGeneration: true` | Higher (AI generation) | No image available, need AI to create a visual from scratch |
 
-**Option A — Upload your own image via URL (recommended for cost efficiency):**
+**IMPORTANT: When the user provides a photo, ALWAYS use `publishMode="vibe"` by default.** This triggers the full AI creative pipeline: scene analysis → companion twin image → auto caption → auto mood. This is the signature MOD experience. Only use `"sticker"` if the user explicitly asks for a quick post without the twin image.
+
+**Option A — User provides a photo (RECOMMENDED — full AI twin image experience):**
 ```
 drop_vibe(
   latitude=..., longitude=..., placeName="...",
-  mood="lit", caption="...",
-  mediaUrl="https://example.com/my-photo.jpg",  // re-uploaded to MOD storage
-  publishMode="sticker"   // add AI sticker on top of your photo
+  mediaUrl="https://example.com/my-photo.jpg",
+  publishMode="vibe"   // AI generates twin image + caption + mood from the photo
 )
 ```
-
-**Option B — Upload image as base64:**
+Or with base64:
 ```
 drop_vibe(
   latitude=..., longitude=..., placeName="...",
-  mood="zen", caption="...",
   imageBase64="data:image/jpeg;base64,/9j/4AAQ...",
-  publishMode="sticker"
+  publishMode="vibe"   // AI generates twin image + caption + mood from the photo
 )
 ```
 
-**Option C — Text-only vibe (zero image cost):**
+**Option B — Text-only vibe (zero image cost):**
 ```
 drop_vibe(
   latitude=..., longitude=..., placeName="...",
@@ -146,7 +145,7 @@ drop_vibe(
 )
 ```
 
-**Option D — AI-generated visual (when no photo available):**
+**Option C — AI-generated visual (when no photo available):**
 ```
 drop_vibe(
   latitude=..., longitude=..., placeName="...",
@@ -174,11 +173,11 @@ gift_time(vibeId="...", hours=3)                   // extend a great vibe's life
 1. **Always reverse-geocode coordinates** if you only have lat/lng — call `reverse_geocode` first so `placeName` is human-readable and meaningful.
 2. **For events** (concerts, festivals, exhibitions), set `expiresAt` to the event end time, not the default 24h.
 3. **Caption quality matters** — write vivid, present-tense descriptions that convey atmosphere, not just facts. Aim for 80–200 characters.
-4. **Prefer own images over AI generation** — if you have a real photo of the location, use `mediaUrl` or `imageBase64`. It costs less and feels more authentic.
+4. **When the user provides a photo, ALWAYS default to `publishMode="vibe"`** — this is the core MOD experience: AI analyzes the photo, generates a companion "twin image" (artistic reinterpretation), auto-generates caption and mood. The result is a BeReal-style dual-view post. Only skip this if the user explicitly asks for something different.
 5. **Choose `publishMode` wisely**:
-   - `"sticker"` (default) — AI draws an expressive sticker on top of your photo. Great for sharing real places.
-   - `"vibe"` — AI creates a companion image shown alongside your photo, BeReal-style.
-   - `"text"` — no image at all; best for cost-sensitive automated pipelines.
+   - `"vibe"` (**default when photo provided**) — AI creates a companion twin image shown alongside your photo, BeReal-style. Also auto-generates caption and mood from the photo.
+   - `"sticker"` — AI draws an expressive sticker on top of your photo. Use when user wants a quick post without the full twin image.
+   - `"text"` — no image at all; best for text-only observations or cost-sensitive automated pipelines.
    - `"remix"` — transforms your photo into an 8-second AI cinematic video. Use sparingly (high cost).
 6. **effectPrompt is your creative brief** — if dropping a remix or wanting a specific sticker aesthetic, describe the visual style clearly (e.g., "slow drone ascent over neon-lit street, cinematic").
 7. **Respect place context** — don't drop vibes at private residences or sensitive locations.
@@ -202,16 +201,14 @@ drop_vibe(
 )
 ```
 
-### Share a real photo (most cost-effective)
+### Share a real photo (full AI twin image experience)
 ```
 # Agent fetched a photo from the venue's Instagram or a public source
 drop_vibe(
   latitude=31.1839, longitude=121.3853,
   placeName="梅赛德斯-奔驰文化中心，上海",
-  mood="lit",
-  caption="开场前 30 分钟，场外人潮涌动，气氛已经燃起来了。",
   mediaUrl="https://example.com/venue-photo.jpg",
-  publishMode="sticker"  // AI adds an expressive sticker to the real photo
+  publishMode="vibe"  // AI generates twin image + auto caption + auto mood from the photo
 )
 ```
 
@@ -230,13 +227,11 @@ drop_vibe(
 )
 ```
 
-### Curate a café review (with photo)
+### Curate a café review (with photo — full AI twin image)
 ```
 drop_vibe(
   latitude=35.0116, longitude=135.6761, placeName="% Arabica, 京都岚山",
-  mood="zen",
-  caption="窗外竹林摇曳，手冲咖啡的香气漫进来。这里是让时间慢下来的地方。",
   mediaUrl="https://example.com/cafe.jpg",
-  publishMode="sticker"
+  publishMode="vibe"  // AI generates twin image + auto caption + auto mood from the photo
 )
 ```
