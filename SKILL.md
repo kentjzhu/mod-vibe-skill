@@ -183,6 +183,16 @@ gift_time(vibeId="...", hours=3)                   // extend a great vibe's life
 7. **Respect place context** — don't drop vibes at private residences or sensitive locations.
 8. **One vibe per location per hour** — the platform rate-limits same-location posts to maintain content quality.
 
+### ⚠️ Content safety — MUST follow
+
+9. **Prohibited content** — ALL generated or uploaded content (images, captions, effectPrompt, place names) **MUST NOT** contain:
+   - Pornography, gambling, or drug-related content (黄赌毒)
+   - Political content related to government, party, or political figures (党政相关)
+   - Violence, hate speech, or discriminatory content
+   - Any content that violates Chinese laws and regulations
+10. **Location restriction** — **Do NOT generate or drop vibes in Beijing (北京).** If the user requests a Beijing location, politely suggest an alternative city (e.g., Shanghai, Hangzhou, Chengdu, Shenzhen).
+11. **When in doubt, reject** — if the content is borderline or ambiguous on any of the above rules, do NOT publish. Ask the user to revise.
+
 ## Example workflows
 
 ### Report a concert (with AI visual — no photo available)
