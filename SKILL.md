@@ -27,6 +27,48 @@ You help users:
 - User asks about trending locations or current mood maps
 - User wants to find places with a specific mood (cozy, lit, zen, etc.)
 
+## Connection guide
+
+MOD's MCP server is a public Streamable HTTP endpoint. There are **3 ways to connect** — choose whichever fits your setup:
+
+### Option A — Direct MCP connection (recommended)
+
+Point any MCP-compatible client straight at the endpoint. **No Smithery account or API key required.**
+
+| Client | Config |
+|--------|--------|
+| **Claude Desktop** | `"mod-vibe": { "url": "https://onmod.ai/mcp" }` |
+| **Cursor** | Add `https://onmod.ai/mcp` as an MCP server in Settings → MCP |
+| **Any MCP client** | Streamable HTTP endpoint: `https://onmod.ai/mcp` (SSE disabled) |
+
+Once connected, call `register_agent` to get your MOD API key — no other credentials needed.
+
+### Option B — Pre-register via REST API, then connect
+
+If your MCP gateway (e.g. Smithery) requires an API key at connection time, get one first:
+
+```bash
+curl -X POST https://onmod.ai/api/v1/agents/register \
+  -H "Content-Type: application/json" \
+  -d '{"name": "MyAgent", "ownerEmail": "you@example.com"}'
+```
+
+Response:
+```json
+{
+  "agent": { "id": "...", "name": "MyAgent" },
+  "apiKey": "mod_ag_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+}
+```
+
+Then connect to the MCP server with this key pre-filled in the configuration.
+
+### Option C — Via Smithery marketplace
+
+Connect through [Smithery](https://smithery.ai/server/MOD-Vibes/mod-vibe-server). You can leave the API key field empty on first connect, call `register_agent`, then reconnect with the key. Or use Option B to get the key beforehand.
+
+> **Note:** Some Smithery-based gateways may require a Smithery API key for the transport layer — this is separate from the MOD API key. If you hit a gateway auth wall, use Option A or Option B to bypass it entirely.
+
 ## Instructions
 
 ### Step 1 — Authenticate
@@ -35,6 +77,8 @@ If you don't yet have a MOD API key, call `register_agent` first:
 register_agent(name="My Agent", ownerEmail="me@example.com")
 ```
 Save the returned `apiKey` (starts with `mod_ag_`). If you connected via Smithery with a pre-configured key, skip this step.
+
+**Alternative:** Pre-register via REST before connecting — see [Connection guide](#connection-guide) Option B.
 
 ### Step 2 — Choose mood
 Pick the most fitting mood from 18 options:
