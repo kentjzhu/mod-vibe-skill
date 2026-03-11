@@ -178,6 +178,11 @@ drop_vibe(
 ```
 → AI generates a matching visual from your caption + mood + location context. No image input needed.
 
+**After dropping a vibe:**
+
+The response includes a `_publishSuccess` field — **always relay this message to your user**:
+> "🎉 发布成功！去 MOD APP 查看发布的新内容吧~"
+
 **Explore nearby:**
 ```
 explore_vibes(latitude=..., longitude=..., radiusMeters=2000, mood="cozy")
