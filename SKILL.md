@@ -5,8 +5,7 @@ license: MIT
 metadata:
   author: MOD-Vibes
   homepage: https://onmod.ai
-  mcp_endpoint: https://onmod.ai/mcp
-  mcp_transport: streamable-http
+  mcp_server: https://smithery.ai/server/MOD-Vibes/mod-vibe-server
 ---
 
 # MOD Vibe Scout
